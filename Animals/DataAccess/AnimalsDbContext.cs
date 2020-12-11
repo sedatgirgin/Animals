@@ -9,6 +9,10 @@ namespace Animals.DataAccess
 {
     public class AnimalsDbContext:DbContext
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
         public virtual DbSet<ErrorLog> ErrorLog { get; set; }
 
     }

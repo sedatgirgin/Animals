@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Animals.ResultMessages;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,10 @@ namespace Animals.Controllers
     {
 
         [HttpGet("Get")]
-        public async Task<ActionResult<bool>> CreateStoreAsync()
+        public async Task<IActionResult> CreateStoreAsync()
         {
-            return Ok ();
+            if (!ModelState.IsValid) return new ErrorResult("Hatalı istek", BadRequest(ModelState).Value);
+            return new Result("Available");
         }
 
     }

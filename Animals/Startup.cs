@@ -1,5 +1,7 @@
 using Animals.DataAccess;
 using Animals.MiddleWare;
+using Animals.Repositories.Abstract;
+using Animals.Repositories.Concrate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,9 +29,11 @@ namespace Animals
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<AnimalsDbContext>(options =>
-            //   options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AnimalsDbContext>(options =>
+               options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
+
+            services.AddScoped<IAnimalRepository, AnimalRepository>();
 
             services.AddMemoryCache();
             services.AddHttpClient();
@@ -38,24 +42,18 @@ namespace Animals
             services.AddSwaggerGen();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
-            //app.UseMiddleware<ErrorHandling>();
 
+            //app.UseMiddleware<ErrorHandling>();
             if (env.IsDevelopment())
             {
-
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
             }
-
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>

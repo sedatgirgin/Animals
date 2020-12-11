@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Animals.Repositories.Abstract
+namespace Animals.GenericRepositories.ResultMessage
 {
     interface IErrorResult : IResult
     {
