@@ -19,10 +19,13 @@ namespace Animals.Controllers
             _animalRepository = animalRepository;
         }
 
-        [HttpGet("Get")]
+        [HttpGet("GetAnimal")]
         public async Task<IActionResult> CreateStoreAsync()
         {
             if (!ModelState.IsValid) return new ErrorResult("Hatalı istek", BadRequest(ModelState).Value);
+
+
+
             return new Result("Available", _animalRepository.TList());
         }
     }

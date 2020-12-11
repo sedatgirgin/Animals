@@ -34,7 +34,7 @@ namespace Animals
             services.AddDbContext<AnimalsDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
-
+            
             services.AddScoped<IAnimalRepository, AnimalRepository>();
             services.AddScoped<ICache, Cache>();
 
