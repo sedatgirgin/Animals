@@ -1,3 +1,5 @@
+using Animals.Caching.Abstract;
+using Animals.Caching.Concrate;
 using Animals.DataAccess;
 using Animals.MiddleWare;
 using Animals.Repositories.Abstract;
@@ -34,6 +36,7 @@ namespace Animals
             services.AddHttpContextAccessor();
 
             services.AddScoped<IAnimalRepository, AnimalRepository>();
+            services.AddScoped<ICache, Cache>();
 
             services.AddMemoryCache();
             services.AddHttpClient();

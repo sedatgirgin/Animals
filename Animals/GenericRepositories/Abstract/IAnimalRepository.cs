@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Animals.Repositories.Abstract
 {
-    interface IAnimalRepository : IGenericRepository<Animal>
+   public  interface IAnimalRepository : IGenericRepository<Animal>
     {
         //eklemek istediğimiz bütün methodlar buraya
     }
