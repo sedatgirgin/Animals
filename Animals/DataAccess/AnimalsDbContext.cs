@@ -27,7 +27,5 @@ namespace Animals.DataAccess
 
         public virtual DbSet<ErrorLog> ErrorLog { get; set; }
         public virtual DbSet<Animal> Animal { get; set; }
-
-
     }
 }

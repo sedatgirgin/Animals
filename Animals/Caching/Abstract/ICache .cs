@@ -7,5 +7,8 @@ namespace Animals.Caching.Abstract
 {
     public interface ICache
     {
+        Task<object> GetCacheAsync(string cacheKey);
+
+        Task SetCacheAsync(object value, string cacheKey);
     }
 }
