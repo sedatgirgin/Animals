@@ -2,8 +2,11 @@ using Animals.Caching.Abstract;
 using Animals.Caching.Concrate;
 using Animals.DataAccess;
 using Animals.MiddleWare;
+using Animals.Models;
 using Animals.Repositories.Abstract;
 using Animals.Repositories.Concrate;
+using Animals.Validation;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,7 +40,9 @@ namespace Animals
             services.AddHttpContextAccessor();
             
             services.AddScoped<IAnimalRepository, AnimalRepository>();
-            services.AddSingleton<ICache, Cache>();
+            services.AddScoped<ICache, Cache>();
+            services.AddTransient<IValidator<Animal>, AnimalValidator>();
+
 
             services.AddMemoryCache();
             services.AddHttpClient();

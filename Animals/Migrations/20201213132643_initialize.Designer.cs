@@ -3,15 +3,17 @@ using System;
 using Animals.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Animals.Migrations
 {
     [DbContext(typeof(AnimalsDbContext))]
-    partial class AnimalsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201213132643_initialize")]
+    partial class initialize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,10 +145,7 @@ namespace Animals.Migrations
                     b.Property<bool>("IsPeriodic")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsUserDefined")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Message")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
