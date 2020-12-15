@@ -1,4 +1,5 @@
 ﻿using Animals.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Animals.DataAccess
 {
-    public class AnimalsDbContext:DbContext
+    public class AnimalsDbContext: IdentityDbContext
     {
         public AnimalsDbContext()
         {
@@ -39,7 +40,6 @@ namespace Animals.DataAccess
             base.OnModelCreating(modelBuilder);
         }
 
-        public virtual DbSet<Weight> User { get; set; }
         public virtual DbSet<Animal> Animal { get; set; }
         public virtual DbSet<Vaccine> Vaccine { get; set; }
         public virtual DbSet<Reminder> Reminder { get; set; }
