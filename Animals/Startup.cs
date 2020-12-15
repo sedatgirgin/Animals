@@ -23,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,13 @@ namespace Animals
          });
 
 
+            services.AddMemoryCache();
+            services.AddHttpClient();
+            services.AddControllers();
+            services.AddMvc().ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            }).AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IAnimalRepository, AnimalRepository>();
@@ -77,11 +85,6 @@ namespace Animals
             services.AddTransient<IValidator<ChangePasswordDto>, ChangePasswordValidator>();
             services.AddTransient<IValidator<UserDto>, UserValidator>();
 
-
-            services.AddMemoryCache();
-            services.AddHttpClient();
-            services.AddMvc();
-            services.AddControllers();
 
             services.AddSwaggerGen(s =>
             {
@@ -124,9 +127,14 @@ namespace Animals
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
             }
-            app.UseAuthentication();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

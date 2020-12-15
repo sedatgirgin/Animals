@@ -17,9 +17,10 @@ using System.Threading.Tasks;
 
 namespace Animals.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
@@ -36,7 +37,9 @@ namespace Animals.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SigningKey"]));
@@ -114,7 +117,6 @@ namespace Animals.Controllers
             return new ErrorResult("Şifre sıfırlama işlemi gerçekleştirilemedi.");
         }
 
-        [Authorize]
         [HttpPatch("ChangePassword")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordDto model)
         {
