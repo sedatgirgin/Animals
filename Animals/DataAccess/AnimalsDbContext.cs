@@ -27,15 +27,15 @@ namespace Animals.DataAccess
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Animal>().HasMany(I => I.AnimalVaccines).
-            //    WithOne(I => I.Animal).HasForeignKey(I => I.AnimalId);
-            //modelBuilder.Entity<Vaccine>().HasMany(I => I.AnimalVaccines).
-            //  WithOne(I => I.Vaccine).HasForeignKey(I => I.VaccineId);
-            //modelBuilder.Entity<AnimalVaccine>().HasIndex(I => new
-            //{
-            //    I.AnimalId,
-            //    I.VaccineId
-            //}).IsUnique();
+            modelBuilder.Entity<Animal>().HasMany(I => I.AnimalVaccines).
+                WithOne(I => I.Animal).HasForeignKey(I => I.AnimalId);
+            modelBuilder.Entity<Vaccine>().HasMany(I => I.AnimalVaccines).
+              WithOne(I => I.Vaccine).HasForeignKey(I => I.VaccineId);
+            modelBuilder.Entity<AnimalVaccine>().HasIndex(I => new
+            {
+                I.AnimalId,
+                I.VaccineId
+            }).IsUnique();
 
             base.OnModelCreating(modelBuilder);
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Animals.GenericRepositories.Abstract
 {
-   public interface IAnimalVaccine : IGenericRepository<Vaccine>
+   public interface IAnimalVaccineRepository : IGenericRepository<AnimalVaccine>
     {
     }
 }

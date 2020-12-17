@@ -21,15 +21,35 @@ namespace Animals.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IAnimalRepository _animalRepository;
         private readonly IAnimalSpeciesRepository _animalSpeciesRepository;
-        
+        private readonly IWeightRepository _weightRepository;
+        private readonly IReminderRepository _reminderRepository; 
+        private readonly IVaccineRepository _vecineRepository; 
+        private readonly IAnimalVaccineRepository _animalVaccineRepository;
 
-        public AnimalController(IAnimalRepository animalRepository, UserManager<User>  userManager, IAnimalSpeciesRepository animalSpeciesRepository)
+        public AnimalController(IAnimalRepository animalRepository, 
+            UserManager<User>  userManager, 
+            IAnimalSpeciesRepository animalSpeciesRepository, 
+            IWeightRepository weightRepository, 
+            IReminderRepository reminderRepository,
+            IVaccineRepository vecineRepository, 
+            IAnimalVaccineRepository animalVaccineRepository)
         {
             _animalRepository = animalRepository;
             _userManager = userManager;
             _animalSpeciesRepository = animalSpeciesRepository;
-
+            _weightRepository = weightRepository;
+            _reminderRepository = reminderRepository;
+            _vecineRepository = vecineRepository;
+            _animalVaccineRepository = animalVaccineRepository;
         }
+
+        [HttpGet("GetAnimalList")]
+        public async Task<IActionResult> GetAnimalListAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return new Result("Animal List",_animalRepository.TListExpression(i => i.User == user).ToList());
+         }
+
 
         [HttpPut("AnimalAdd")]
         public async Task<IActionResult> AddAnimalAsync(AnimalDto model)
@@ -51,8 +71,31 @@ namespace Animals.Controllers
             return new Result("Ekleme işlemi başarılı.");
         }
 
+        [HttpPatch("AnimalDelete")]
+        public async Task<IActionResult> DeleteAnimalAsync(int animalId)
+        {
+            var animal = _animalRepository.TGet(animalId);
+            _animalRepository.TDelete(animal);
+            foreach (var item in _weightRepository.TListExpression(i => i.Animal == animal).ToList())
+            {
+                _weightRepository.TDelete(item);
+            }
+
+            foreach (var item in _reminderRepository.TListExpression(i => i.Animal == animal).ToList())
+            {
+                _reminderRepository.TDelete(item);
+            }
+
+            foreach (var item in _animalVaccineRepository.TListExpression(i => i.Animal == animal).ToList())
+            {
+                _animalVaccineRepository.TDelete(item);
+            }
+
+            return new Result("Silme işlemi başarılı.");
+        }
 
 
 
-     }
+
+    }
 }
