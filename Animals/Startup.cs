@@ -45,8 +45,8 @@ namespace Animals
         {
             services.AddDbContext<AnimalsDbContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddHttpContextAccessor();
 
+            services.AddHttpContextAccessor();
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AnimalsDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(x =>
@@ -65,8 +65,7 @@ namespace Animals
                        ValidAudience = Configuration["Jwt:Audience"],
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SigningKey"]))
                    };
-         });
-
+             });
 
             services.AddMemoryCache();
             services.AddHttpClient();
@@ -79,12 +78,10 @@ namespace Animals
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IAnimalRepository, AnimalRepository>();
             services.AddScoped<ICache, Cache>();
-
             services.AddTransient<IValidator<LoginDto>, LoginValidator>();
             services.AddTransient<IValidator<ResetPasswordDto>, ResetPasswordValidator>();
             services.AddTransient<IValidator<ChangePasswordDto>, ChangePasswordValidator>();
             services.AddTransient<IValidator<UserDto>, UserValidator>();
-
 
             services.AddSwaggerGen(s =>
             {
@@ -111,11 +108,8 @@ namespace Animals
                         Array.Empty<string>()
                     }
                 });
-
             });
         }
-
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandling>();
@@ -127,13 +121,11 @@ namespace Animals
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
             }
+
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.UseEndpoints(endpoints =>
             {
