@@ -75,7 +75,7 @@ namespace Animals.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("UserInsert")]
+        [HttpPut("UserAdd")]
         public async Task<IActionResult> InsertUserAsync(UserDto model)
         {
             if (!ModelState.IsValid) return new ErrorResult("Hatalı istek", BadRequest(ModelState).Value);
@@ -88,10 +88,13 @@ namespace Animals.Controllers
             if (_userManager.FindByNameAsync(model.Email).Result == null)
             {
                 var identityUserResult = _userManager.CreateAsync(appUser, model.NewPassword).Result;
-                return new Result(identityUserResult.Succeeded.ToString());
-
+                if (identityUserResult.Succeeded)
+                {
+                    return new Result(identityUserResult.Succeeded.ToString());
+                }
+                return new ErrorResult("Kullanıcı eklemede hata oluştu..");
             }
-            return new ErrorResult("Kullanıcı eklenmede hata oluştu.");
+            return new ErrorResult("Email adresine kayıtlı bir hesap bulunmaktadır.");
         }
 
 
@@ -108,6 +111,7 @@ namespace Animals.Controllers
                 return new ErrorResult("E-posta ile ilişkilendirilmiş kullanıcı bulunmamaktadır.");
             }
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            //Email onayı eklenecek ilerde.
             var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
             if (result.Succeeded)
             {

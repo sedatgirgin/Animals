@@ -30,7 +30,7 @@ namespace Animals.Repositories.Concrate
         }
         public void TAdd(T data)
         {
-            dbSet.Add(data);
+           dbSet.Add(data);
             Save();
         }
 
