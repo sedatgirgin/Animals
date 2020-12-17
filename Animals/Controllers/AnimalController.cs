@@ -94,8 +94,60 @@ namespace Animals.Controllers
             return new Result("Silme işlemi başarılı.");
         }
 
+        [HttpGet("GetAnimalsVaccination")]
+        public async Task<IActionResult> GetAnimalsVaccinationAsync(int animalId)
+        {
+           return new Result("Animal List", _vecineRepository.GetVeccineList(animalId));
+        }
 
+        [HttpGet("GetVaccinasAnimal")]
+        public async Task<IActionResult> GetVaccinasAnimalAsync(int vaccineId)
+        {
+            return new Result("Animal List", _vecineRepository.GetAnimalList(vaccineId));
+        }
 
+        [HttpPut("AddAnimalVaccine")]
+        public async Task<IActionResult> AddAnimalVaccineAsync(int animalId,  int vaccineId,DateTime dateTime)
+        {
+            //var animal =_animalRepository.TGet(animalId);
+            //var vaccine =_vecineRepository.TGet(vaccineId);
+            var animalVaccine = new AnimalVaccine() { AnimalId = animalId, Date = dateTime, VaccineId = vaccineId };
+           _vecineRepository.AddAnimalVaccine(animalVaccine);
+            return new Result("Ekleme işlemi başarılı.");
+        }
 
+        [HttpPatch("DeleteAnimalVaccine")]
+        public async Task<IActionResult> DeleteAnimalVaccineAsync(int animalId, int vaccineId)
+        {
+           var animalVaccine = _animalVaccineRepository.TFindExpression(i => i.VaccineId == vaccineId && i.AnimalId == animalId);
+           _vecineRepository.DeleteAnimalVaccine(animalVaccine);
+            return new Result("Silma işlemi başarılı.");
+        }
+
+        [HttpGet("VaccineList")]
+        public async Task<IActionResult> VaccineListAsync()
+        {
+            return new Result("Vaccine List",_vecineRepository.TList());
+        }
+
+        [HttpGet("GetAnimalsReminders")]
+        public async Task<IActionResult> GetAnimalsRemindersAsync(int animalId)
+        {
+            return new Result("Animal List", _reminderRepository.TListExpression(i=>i.Animal.Id==animalId));
+        }
+
+        [HttpPatch("DeleteReminder")]
+        public async Task<IActionResult> DeleteReminderAsync(int reminderId)
+        {
+            _reminderRepository.TDelete(_reminderRepository.TGet(reminderId));
+            return new Result("Hatırlatma başarı ile silindi");
+        }
+
+        [HttpPut("AddReminder")]
+        public async Task<IActionResult> AddReminderAsync(RemiderDto reminder)
+        {
+            _reminderRepository.TAdd(new Reminder() { Animal = _animalRepository.TGet(reminder.AnimalId), Date = reminder.Date, IsPeriodic = reminder.IsPeriodic, IsUserDefined = reminder.IsUserDefined, Message = reminder.Message, Period = reminder.Period });
+            return new Result("Hatırlatma başarı ile eklendi");
+        }
     }
 }
