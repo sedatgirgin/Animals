@@ -23,7 +23,7 @@ namespace Animals.Controllers
         private readonly IAnimalSpeciesRepository _animalSpeciesRepository;
         private readonly IWeightRepository _weightRepository;
         private readonly IReminderRepository _reminderRepository; 
-        private readonly IVaccineRepository _vecineRepository; 
+        private readonly IVaccineRepository _vaccineRepository; 
         private readonly IAnimalVaccineRepository _animalVaccineRepository;
 
         public AnimalController(IAnimalRepository animalRepository, 
@@ -31,7 +31,7 @@ namespace Animals.Controllers
             IAnimalSpeciesRepository animalSpeciesRepository, 
             IWeightRepository weightRepository, 
             IReminderRepository reminderRepository,
-            IVaccineRepository vecineRepository, 
+            IVaccineRepository vaccineRepository, 
             IAnimalVaccineRepository animalVaccineRepository)
         {
             _animalRepository = animalRepository;
@@ -39,7 +39,7 @@ namespace Animals.Controllers
             _animalSpeciesRepository = animalSpeciesRepository;
             _weightRepository = weightRepository;
             _reminderRepository = reminderRepository;
-            _vecineRepository = vecineRepository;
+            _vaccineRepository = vaccineRepository;
             _animalVaccineRepository = animalVaccineRepository;
         }
 
@@ -94,17 +94,13 @@ namespace Animals.Controllers
             return new Result("Silme işlemi başarılı.");
         }
 
-        [HttpGet("GetAnimalsVaccination")]
-        public async Task<IActionResult> GetAnimalsVaccinationAsync(int animalId)
-        {
-           return new Result("Animal List", _vecineRepository.GetVeccineList(animalId));
-        }
+        [HttpGet("GetAnimalsVaccines")]
+        public async Task<IActionResult> GetAnimalsVaccinesAsync(int animalId) => new Result("Animal List", _vaccineRepository.GetVeccineList(animalId));
 
-        [HttpGet("GetVaccinasAnimal")]
-        public async Task<IActionResult> GetVaccinasAnimalAsync(int vaccineId)
-        {
-            return new Result("Animal List", _vecineRepository.GetAnimalList(vaccineId));
-        }
+
+        [HttpGet("GetVaccinesAnimal")]
+        public async Task<IActionResult> GetVaccinesAnimalAsync(int vaccineId)=> new Result("Animal List", _vaccineRepository.GetAnimalList(vaccineId));
+   
 
         [HttpPut("AddAnimalVaccine")]
         public async Task<IActionResult> AddAnimalVaccineAsync(int animalId,  int vaccineId,DateTime dateTime)
@@ -112,7 +108,7 @@ namespace Animals.Controllers
             //var animal =_animalRepository.TGet(animalId);
             //var vaccine =_vecineRepository.TGet(vaccineId);
             var animalVaccine = new AnimalVaccine() { AnimalId = animalId, Date = dateTime, VaccineId = vaccineId };
-           _vecineRepository.AddAnimalVaccine(animalVaccine);
+            _vaccineRepository.AddAnimalVaccine(animalVaccine);
             return new Result("Ekleme işlemi başarılı.");
         }
 
@@ -120,21 +116,17 @@ namespace Animals.Controllers
         public async Task<IActionResult> DeleteAnimalVaccineAsync(int animalId, int vaccineId)
         {
            var animalVaccine = _animalVaccineRepository.TFindExpression(i => i.VaccineId == vaccineId && i.AnimalId == animalId);
-           _vecineRepository.DeleteAnimalVaccine(animalVaccine);
+            _vaccineRepository.DeleteAnimalVaccine(animalVaccine);
             return new Result("Silma işlemi başarılı.");
         }
 
         [HttpGet("VaccineList")]
-        public async Task<IActionResult> VaccineListAsync()
-        {
-            return new Result("Vaccine List",_vecineRepository.TList());
-        }
+        public async Task<IActionResult> VaccineListAsync() => new Result("Vaccine List", _vaccineRepository.TList());
 
-        [HttpGet("GetAnimalsReminders")]
-        public async Task<IActionResult> GetAnimalsRemindersAsync(int animalId)
-        {
-            return new Result("Animal List", _reminderRepository.TListExpression(i=>i.Animal.Id==animalId));
-        }
+
+        [HttpGet("GetAnimalReminders")]
+        public async Task<IActionResult> GetAnimalRemindersAsync(int animalId)=> new Result("Animal List", _reminderRepository.TListExpression(i => i.Animal.Id == animalId));
+ 
 
         [HttpPatch("DeleteReminder")]
         public async Task<IActionResult> DeleteReminderAsync(int reminderId)
@@ -146,7 +138,12 @@ namespace Animals.Controllers
         [HttpPut("AddReminder")]
         public async Task<IActionResult> AddReminderAsync(RemiderDto reminder)
         {
-            _reminderRepository.TAdd(new Reminder() { Animal = _animalRepository.TGet(reminder.AnimalId), Date = reminder.Date, IsPeriodic = reminder.IsPeriodic, IsUserDefined = reminder.IsUserDefined, Message = reminder.Message, Period = reminder.Period });
+            _reminderRepository.TAdd(new Reminder() { Animal = _animalRepository.TGet(reminder.AnimalId), 
+                Date = reminder.Date, 
+                IsPeriodic = reminder.IsPeriodic, 
+                IsUserDefined = reminder.IsUserDefined, 
+                Message = reminder.Message, 
+                Period = reminder.Period });
             return new Result("Hatırlatma başarı ile eklendi");
         }
     }

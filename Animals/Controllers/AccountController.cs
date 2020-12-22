@@ -148,10 +148,10 @@ namespace Animals.Controllers
                         errors.Add(error.Description);
                     }
                 }
-
                 return new ErrorResult(string.Join("\n", errors));
             }
             return new Result("Şifreniz başarıyla değiştirildi.");
         }
+
     }
  }
