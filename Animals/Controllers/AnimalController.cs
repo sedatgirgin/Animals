@@ -43,37 +43,44 @@ namespace Animals.Controllers
             _animalVaccineRepository = animalVaccineRepository;
         }
 
-        [HttpGet("GetAnimalList")]
-        public async Task<IActionResult> GetAnimalListAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return new Result("Animal List",_animalRepository.TListExpression(i => i.User == user).ToList());
-         }
-
-
-        [HttpPut("AnimalAdd")]
+        [HttpPut("AddAnimal")]
         public async Task<IActionResult> AddAnimalAsync(AnimalDto model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var animalSpecies =  _animalSpeciesRepository.TGet(model.AnimalSpeciesId);
-
-            Animal animal = new Animal()
+            var id = (await _userManager.GetUserAsync(User)).Id;
+            var animalSpecies =  _animalSpeciesRepository.TFindExpression(i=>i.Breed==model.Breed);
+            if(animalSpecies !=null)
             {
-                Name = model.Name,
-                Breed = model.Breed,
-                DateOfBirth = model.DateOfBirth,
-                Gender = model.Gender,
-                IsNeutered = model.IsNeutered,
-                User = user,
-                AnimalSpecies = animalSpecies
-            };
-            _animalRepository.TAdd(animal);
-            return new Result("Ekleme işlemi başarılı.");
+                Animal animal = new Animal()
+                {
+                    Name = model.Name,
+                    Breed = model.Breed,
+                    DateOfBirth = model.DateOfBirth,
+                    Gender = model.Gender,
+                    IsNeutered = model.IsNeutered,
+                    UserId = id,
+                    AnimalSpeciesId = animalSpecies.Id
+                };
+                _animalRepository.TAdd(animal);
+                return new Result("Ekleme işlemi başarılı.");
+            }
+            return new ErrorResult("Ekleme işlemi başarısız.");
         }
 
-        [HttpPatch("AnimalDelete")]
+        [HttpGet("ListAnimal")]
+        public async Task<IActionResult> ListAnimalAsync()
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+           var id = (await _userManager.GetUserAsync(User)).Id;
+          return  new Result("Animal List", _animalRepository.TListExpression(i => i.UserId == id)); 
+        }
+
+        [HttpPatch("DeleteAnimal")]
         public async Task<IActionResult> DeleteAnimalAsync(int animalId)
         {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
             var animal = _animalRepository.TGet(animalId);
             _animalRepository.TDelete(animal);
             foreach (var item in _weightRepository.TListExpression(i => i.Animal == animal).ToList())
@@ -94,12 +101,24 @@ namespace Animals.Controllers
             return new Result("Silme işlemi başarılı.");
         }
 
-        [HttpGet("GetAnimalsVaccines")]
-        public async Task<IActionResult> GetAnimalsVaccinesAsync(int animalId) => new Result("Animal List", _vaccineRepository.GetVeccineList(animalId));
+        [HttpGet("ListAnimalsVaccines")]
+        public async Task<IActionResult> ListAnimalsVaccinesAsync(int animalId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return new Result("Animal List", _vaccineRepository.GetVeccineList(animalId));
+        }
 
 
-        [HttpGet("GetVaccinesAnimal")]
-        public async Task<IActionResult> GetVaccinesAnimalAsync(int vaccineId)=> new Result("Animal List", _vaccineRepository.GetAnimalList(vaccineId));
+        [HttpGet("ListVaccinesAnimal")]
+        public async Task<IActionResult> ListVaccinesAnimalAsync(int vaccineId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return new Result("Animal List", _vaccineRepository.GetAnimalList(vaccineId));
+        }
    
 
         [HttpPut("AddAnimalVaccine")]
@@ -120,12 +139,24 @@ namespace Animals.Controllers
             return new Result("Silma işlemi başarılı.");
         }
 
-        [HttpGet("VaccineList")]
-        public async Task<IActionResult> VaccineListAsync() => new Result("Vaccine List", _vaccineRepository.TList());
+        [HttpGet("ListVaccine")]
+        public async Task<IActionResult> VaccineListAsync()
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return  new Result("Vaccine List", _vaccineRepository.TList());
+        }
 
 
         [HttpGet("GetAnimalReminders")]
-        public async Task<IActionResult> GetAnimalRemindersAsync(int animalId)=> new Result("Animal List", _reminderRepository.TListExpression(i => i.Animal.Id == animalId));
+        public async Task<IActionResult> GetAnimalRemindersAsync(int animalId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return new Result("Animal List", _reminderRepository.TListExpression(i => i.Animal.Id == animalId));
+        }
  
 
         [HttpPatch("DeleteReminder")]

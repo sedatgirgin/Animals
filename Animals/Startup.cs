@@ -2,6 +2,8 @@ using Animals.Caching.Abstract;
 using Animals.Caching.Concrate;
 using Animals.DataAccess;
 using Animals.Entities;
+using Animals.GenericRepositories.Abstract;
+using Animals.GenericRepositories.Concrate;
 using Animals.MiddleWare;
 using Animals.Models;
 using Animals.Repositories.Abstract;
@@ -77,6 +79,12 @@ namespace Animals
 
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IAnimalRepository, AnimalRepository>();
+            services.AddScoped<IAnimalSpeciesRepository, AnimalSpeciesRepository>();
+            services.AddScoped<IWeightRepository, WeightRepository>();
+            services.AddScoped<IReminderRepository, ReminderRepository>();
+            services.AddScoped<IVaccineRepository, VaccineRepository>();
+            services.AddScoped<IAnimalVaccineRepository, AnimalVaccineRepository>();
+
             services.AddScoped<ICache, Cache>();
             services.AddTransient<IValidator<LoginDto>, LoginValidator>();
             services.AddTransient<IValidator<ResetPasswordDto>, ResetPasswordValidator>();

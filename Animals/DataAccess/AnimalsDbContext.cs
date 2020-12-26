@@ -37,6 +37,9 @@ namespace Animals.DataAccess
                 I.VaccineId
             }).IsUnique();
 
+            modelBuilder.Entity<User>().HasMany(I => I.Animals).
+              WithOne(I => I.User).HasForeignKey(I => I.UserId);
+
             base.OnModelCreating(modelBuilder);
         }
 

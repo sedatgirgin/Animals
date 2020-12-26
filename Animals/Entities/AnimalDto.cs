@@ -12,8 +12,5 @@ namespace Animals.Entities
         public string Breed { get; set; }
         public string Gender { get; set; }
         public bool IsNeutered { get; set; }
-        public string UserId { get; set; }
-        public int AnimalSpeciesId { get; set; }
-
     }
 }

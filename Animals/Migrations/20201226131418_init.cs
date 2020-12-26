@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Animals.Migrations
 {
-    public partial class initialize : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace Animals.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PregnancyDuration = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -86,6 +86,7 @@ namespace Animals.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Period = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -125,8 +126,9 @@ namespace Animals.Migrations
                     Breed = table.Column<string>(type: "text", nullable: true),
                     Gender = table.Column<string>(type: "text", nullable: true),
                     IsNeutered = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    AnimalSpeciesId = table.Column<int>(type: "integer", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    AnimalSpeciesId = table.Column<int>(type: "integer", nullable: false),
+                    PregnancyDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,13 +138,13 @@ namespace Animals.Migrations
                         column: x => x.AnimalSpeciesId,
                         principalTable: "AnimalSpecies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Animal_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -236,8 +238,8 @@ namespace Animals.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AnimalId = table.Column<int>(type: "integer", nullable: true),
-                    VaccineId = table.Column<int>(type: "integer", nullable: true),
+                    AnimalId = table.Column<int>(type: "integer", nullable: false),
+                    VaccineId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
@@ -248,13 +250,13 @@ namespace Animals.Migrations
                         column: x => x.AnimalId,
                         principalTable: "Animal",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AnimalVaccine_Vaccine_VaccineId",
                         column: x => x.VaccineId,
                         principalTable: "Vaccine",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,9 +315,10 @@ namespace Animals.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnimalVaccine_AnimalId",
+                name: "IX_AnimalVaccine_AnimalId_VaccineId",
                 table: "AnimalVaccine",
-                column: "AnimalId");
+                columns: new[] { "AnimalId", "VaccineId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AnimalVaccine_VaccineId",

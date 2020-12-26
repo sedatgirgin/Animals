@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Animals.Migrations
 {
     [DbContext(typeof(AnimalsDbContext))]
-    [Migration("20201213165924_initialize")]
-    partial class initialize
+    [Migration("20201226131418_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,7 +28,7 @@ namespace Animals.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int?>("AnimalSpeciesId")
+                    b.Property<int>("AnimalSpeciesId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Breed")
@@ -47,8 +47,10 @@ namespace Animals.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("PregnancyDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -67,8 +69,10 @@ namespace Animals.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
+                    b.Property<string>("Breed")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("PregnancyDuration")
                         .HasColumnType("integer");
@@ -85,20 +89,21 @@ namespace Animals.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int?>("AnimalId")
+                    b.Property<int>("AnimalId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("VaccineId")
+                    b.Property<int>("VaccineId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnimalId");
-
                     b.HasIndex("VaccineId");
+
+                    b.HasIndex("AnimalId", "VaccineId")
+                        .IsUnique();
 
                     b.ToTable("AnimalVaccine");
                 });
@@ -169,6 +174,11 @@ namespace Animals.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
+
+                    b.Property<string>("Breed")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -417,13 +427,13 @@ namespace Animals.Migrations
                 {
                     b.HasOne("Animals.Models.AnimalSpecies", "AnimalSpecies")
                         .WithMany()
-                        .HasForeignKey("AnimalSpeciesId");
-
-                    b.HasOne("Animals.Models.User", "User")
-                        .WithMany("Animal")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AnimalSpeciesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Animals.Models.User", "User")
+                        .WithMany("Animals")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("AnimalSpecies");
 
@@ -434,11 +444,15 @@ namespace Animals.Migrations
                 {
                     b.HasOne("Animals.Models.Animal", "Animal")
                         .WithMany("AnimalVaccines")
-                        .HasForeignKey("AnimalId");
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Animals.Models.Vaccine", "Vaccine")
                         .WithMany("AnimalVaccines")
-                        .HasForeignKey("VaccineId");
+                        .HasForeignKey("VaccineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Animal");
 
@@ -530,7 +544,7 @@ namespace Animals.Migrations
 
             modelBuilder.Entity("Animals.Models.User", b =>
                 {
-                    b.Navigation("Animal");
+                    b.Navigation("Animals");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,8 +12,7 @@ namespace Animals.Validation
         public AnimalValidator()
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Lütfen isim giriniz..");
-            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId boş olamaz giriniz..");
-            RuleFor(x => x.AnimalSpeciesId).NotEmpty().WithMessage("AnimalSpeciesId boş olamaz giriniz..");
+            RuleFor(x => x.Breed).NotEmpty().WithMessage("Lütfen isim giriniz..");
         }
     }
 }

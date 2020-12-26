@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,12 +22,22 @@ namespace Animals.Models
         public string Gender { get; set; }
         [MaybeNull]
         public bool IsNeutered { get; set; }
-        [Required]
+
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public User User { get; set; }
-        [Required]
+
+
+        [ForeignKey("AnimalSpeciesId")]
+        public int AnimalSpeciesId { get; set; }
         public AnimalSpecies AnimalSpecies { get; set; }
+
+
         [MaybeNull]
         public List<Weight> Weights { get; set; }
+
+        public DateTime PregnancyDate { get; set; }
+
         [MaybeNull]
         public List<AnimalVaccine> AnimalVaccines { get; set; }
 

@@ -9,7 +9,7 @@ namespace Animals.Models
 {
     public class User: IdentityUser
     {
-        public List< Animal> Animal { get; set; }
+        public List< Animal> Animals { get; set; }
 
     }
 }
