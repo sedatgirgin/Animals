@@ -7,6 +7,7 @@ namespace Animals.Entities
 {
     public class WeightDto
     {
+        public int Id { get; set; }
         public int AnimalId { get; set; }
         public DateTime Date { get; set; }
         public double Value { get; set; }

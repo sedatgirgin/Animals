@@ -66,8 +66,8 @@ namespace Animals.Controllers
             return new ErrorResult("Ekleme işlemi başarısız.");
         }
 
-        [HttpGet("ListAnimal")]
-        public async Task<IActionResult> ListAnimalAsync()
+        [HttpGet("GetAnimals")]
+        public async Task<IActionResult> GetAnimalsAsync()
         {
             if (!ModelState.IsValid)
                 return new ErrorResult("Hatalı işlem");
@@ -83,23 +83,153 @@ namespace Animals.Controllers
 
             var animal = _animalRepository.TGet(animalId);
             _animalRepository.TDelete(animal);
-            foreach (var item in _weightRepository.TListExpression(i => i.Animal == animal).ToList())
+
+            foreach (var item in _weightRepository.TListExpression(i => i.AnimalId == animal.Id).ToList())
             {
                 _weightRepository.TDelete(item);
             }
 
-            foreach (var item in _reminderRepository.TListExpression(i => i.Animal == animal).ToList())
+            foreach (var item in _reminderRepository.TListExpression(i => i.AnimalId == animal.Id).ToList())
             {
                 _reminderRepository.TDelete(item);
             }
 
-            foreach (var item in _animalVaccineRepository.TListExpression(i => i.Animal == animal).ToList())
+            foreach (var item in _animalVaccineRepository.TListExpression(i => i.AnimalId == animal.Id).ToList())
             {
                 _animalVaccineRepository.TDelete(item);
             }
 
             return new Result("Silme işlemi başarılı.");
         }
+
+        [HttpPatch("UpdateAnimal")]
+        public async Task<IActionResult> UpdateAnimalAsync(AnimalDto model)
+        {
+            var animal = _animalRepository.TGet(model.AnimalId);
+
+            if (animal != null)
+            {
+                animal.Name = model.Name;
+                animal.Breed = model.Breed;
+                animal.DateOfBirth = model.DateOfBirth;
+                animal.Gender = model.Gender;
+                animal.IsNeutered = model.IsNeutered;
+
+                _animalRepository.TUpdate(animal);
+                return new Result("Güncellme işlemi başarılı.");
+            }
+            return new ErrorResult("Güncellme işlemi başarısız.");
+        }
+
+
+        [HttpGet("GetAnimalReminders")]
+        public async Task<IActionResult> GetAnimalRemindersAsync(int animalId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return new Result("Animal List", _reminderRepository.TListExpression(i => i.AnimalId == animalId));
+        }
+
+
+        [HttpPatch("DeleteReminder")]
+        public async Task<IActionResult> DeleteReminderAsync(int reminderId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            _reminderRepository.TDelete(_reminderRepository.TGet(reminderId));
+            return new Result("Hatırlatma başarı ile silindi");
+        }
+
+        [HttpPut("AddReminder")]
+        public async Task<IActionResult> AddReminderAsync(RemiderDto model)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+            var animal = _animalRepository.TGet(model.AnimalId);
+            if (animal != null)
+            {
+                _reminderRepository.TAdd(new Reminder()
+                {
+                    AnimalId = model.AnimalId,
+                    Date = model.Date,
+                    IsPeriodic = model.IsPeriodic,
+                    IsUserDefined = model.IsUserDefined,
+                    Message = model.Message,
+                    Period = model.Period
+                });
+                return new Result("Hatırlatma başarı ile eklendi");
+            }
+            return new ErrorResult("İlişkilendirilmiş hayvan bulunmamaktadır.");
+        }
+
+        [HttpPost("UpdateReminder")]
+        public async Task<IActionResult> UpdateReminderAsync(RemiderDto model)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            var remider = _reminderRepository.TGet(model.RemiderId);
+
+            if (remider != null)
+            {
+                remider.Date = model.Date;
+                remider.IsPeriodic = model.IsPeriodic;
+                remider.IsUserDefined = model.IsUserDefined;
+                remider.Message = model.Message;
+                remider.Period = model.Period;
+
+                _reminderRepository.TUpdate(remider);
+                return new Result("Güncellme işlemi başarılı.");
+            }
+            return new ErrorResult("Güncellme işlemi başarısız.");
+        }
+
+
+
+        [HttpPut("AddWeight")]
+        public async Task<IActionResult> AddWeightAsync(WeightDto model)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            var animal = _animalRepository.TGet(model.AnimalId);
+
+            if (animal != null)
+            {
+                _weightRepository.TAdd(new Weight()
+                {
+                    AnimalId = model.AnimalId,
+                    Date = model.Date,
+                    Value = model.Value
+
+                });
+                return new Result("Hatırlatma başarı ile eklendi");
+            }
+            return new ErrorResult("İlişkilendirilmiş hayvan bulunmamaktadır.");
+        }
+
+        [HttpDelete("DeleteWeight")]
+        public async Task<IActionResult> DeleteWeight(int WeigthId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            _weightRepository.TDelete(_weightRepository.TGet(WeigthId));
+            return new Result("Silme işlemi başarılı");
+        }
+
+
+        [HttpGet("GetWeights")]
+        public async Task<IActionResult> GetWeightsAsync(int animalId)
+        {
+            if (!ModelState.IsValid)
+                return new ErrorResult("Hatalı işlem");
+
+            return new Result("Animal List", _weightRepository.TListExpression(i => i.AnimalId== animalId));
+        }
+
 
         [HttpGet("ListAnimalsVaccines")]
         public async Task<IActionResult> ListAnimalsVaccinesAsync(int animalId)
@@ -111,14 +241,14 @@ namespace Animals.Controllers
         }
 
 
-        [HttpGet("ListVaccinesAnimal")]
-        public async Task<IActionResult> ListVaccinesAnimalAsync(int vaccineId)
-        {
-            if (!ModelState.IsValid)
-                return new ErrorResult("Hatalı işlem");
+        //[HttpGet("ListVaccinesAnimal")]
+        //public async Task<IActionResult> ListVaccinesAnimalAsync(int vaccineId)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return new ErrorResult("Hatalı işlem");
 
-            return new Result("Animal List", _vaccineRepository.GetAnimalList(vaccineId));
-        }
+        //    return new Result("Animal List", _vaccineRepository.GetAnimalList(vaccineId));
+        //}
    
 
         [HttpPut("AddAnimalVaccine")]
@@ -140,42 +270,16 @@ namespace Animals.Controllers
         }
 
         [HttpGet("ListVaccine")]
-        public async Task<IActionResult> VaccineListAsync()
+        public async Task<IActionResult> VaccineListAsync(string breed)
         {
             if (!ModelState.IsValid)
                 return new ErrorResult("Hatalı işlem");
+            var vaccines = _vaccineRepository.TListExpression(i => i.Breed == breed);
 
-            return  new Result("Vaccine List", _vaccineRepository.TList());
+            return  new Result("Vaccine List", vaccines);
         }
 
 
-        [HttpGet("GetAnimalReminders")]
-        public async Task<IActionResult> GetAnimalRemindersAsync(int animalId)
-        {
-            if (!ModelState.IsValid)
-                return new ErrorResult("Hatalı işlem");
 
-            return new Result("Animal List", _reminderRepository.TListExpression(i => i.Animal.Id == animalId));
-        }
- 
-
-        [HttpPatch("DeleteReminder")]
-        public async Task<IActionResult> DeleteReminderAsync(int reminderId)
-        {
-            _reminderRepository.TDelete(_reminderRepository.TGet(reminderId));
-            return new Result("Hatırlatma başarı ile silindi");
-        }
-
-        [HttpPut("AddReminder")]
-        public async Task<IActionResult> AddReminderAsync(RemiderDto reminder)
-        {
-            _reminderRepository.TAdd(new Reminder() { Animal = _animalRepository.TGet(reminder.AnimalId), 
-                Date = reminder.Date, 
-                IsPeriodic = reminder.IsPeriodic, 
-                IsUserDefined = reminder.IsUserDefined, 
-                Message = reminder.Message, 
-                Period = reminder.Period });
-            return new Result("Hatırlatma başarı ile eklendi");
-        }
     }
 }
