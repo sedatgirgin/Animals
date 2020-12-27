@@ -39,12 +39,12 @@ namespace Animals.GenericRepositories.Concrate
 
         public List<Animal> GetAnimalList(int vaccineId)
         {
-            return context.Vaccine.Join(context.AnimalVaccine, veccine => veccine.Id,
+            return context.Vaccines.Join(context.AnimalVaccines, veccine => veccine.Id,
             animalVaccine => animalVaccine.VaccineId, (u, uc) => new
             {
                 vaccine = u,
                 animalVaccine = uc
-            }).Join(context.Animal, twoTable => twoTable.animalVaccine.AnimalId,
+            }).Join(context.Animals, twoTable => twoTable.animalVaccine.AnimalId,
                animal => animal.Id, (uc, k) => new
                {
                    ve = uc.vaccine,
@@ -53,21 +53,21 @@ namespace Animals.GenericRepositories.Concrate
                }
                ).Where(I => I.animal.Id == vaccineId).Select(I => new Animal
                {
-                   Id = I.animal.Id,
-                   AnimalSpecies = I.animal.AnimalSpecies,
-                   Breed = I.animal.Breed,
-                   DateOfBirth = I.animal.DateOfBirth,
-                   Gender = I.animal.Gender,
-                   IsNeutered = I.animal.IsNeutered,
-                   Name = I.animal.Name,
-                   Weights = I.animal.Weights
+                   //Id = I.animal.Id,
+                   //AnimalSpecies = I.animal.AnimalSpecies,
+                   //Breed = I.animal.Breed,
+                   //DateOfBirth = I.animal.DateOfBirth,
+                   //Gender = I.animal.Gender,
+                   //IsNeutered = I.animal.IsNeutered,
+                   //Name = I.animal.Name,
+                   //Weights = I.animal.Weights
 
                }).ToList();
         }
 
         public List<Vaccine> GetVeccineList(int animalId)
         {
-            return context.Vaccine.Join(context.AnimalVaccine, vaccine => vaccine.Id,
+            return context.Vaccines.Join(context.AnimalVaccines, vaccine => vaccine.Id,
                           animalVaccine => animalVaccine.VaccineId, (vaccine2, animalVaccine2) => new
                           {
                               vaccine3 = vaccine2,

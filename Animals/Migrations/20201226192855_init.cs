@@ -9,20 +9,6 @@ namespace Animals.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AnimalSpecies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    PregnancyDuration = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnimalSpecies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -80,18 +66,29 @@ namespace Animals.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vaccine",
+                name: "ReminderType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Breed = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Period = table.Column<int>(type: "integer", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vaccine", x => x.Id);
+                    table.PrimaryKey("PK_ReminderType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Species",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Species", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,38 +110,6 @@ namespace Animals.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Animal",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Breed = table.Column<string>(type: "text", nullable: true),
-                    Gender = table.Column<string>(type: "text", nullable: true),
-                    IsNeutered = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    AnimalSpeciesId = table.Column<int>(type: "integer", nullable: false),
-                    PregnancyDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Animal", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Animal_AnimalSpecies_AnimalSpeciesId",
-                        column: x => x.AnimalSpeciesId,
-                        principalTable: "AnimalSpecies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Animal_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -233,6 +198,78 @@ namespace Animals.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AnimalSpecies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SpeciesIId = table.Column<int>(type: "integer", nullable: false),
+                    PregnancyDuration = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimalSpecies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnimalSpecies_Species_SpeciesIId",
+                        column: x => x.SpeciesIId,
+                        principalTable: "Species",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vaccine",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    SpeciesId = table.Column<int>(type: "integer", nullable: false),
+                    Period = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vaccine", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vaccine_Species_SpeciesId",
+                        column: x => x.SpeciesId,
+                        principalTable: "Species",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Animal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: true),
+                    IsNeutered = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    SubSpeciesId = table.Column<int>(type: "integer", nullable: false),
+                    PregnancyDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Animal", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Animal_AnimalSpecies_SubSpeciesId",
+                        column: x => x.SubSpeciesId,
+                        principalTable: "AnimalSpecies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Animal_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnimalVaccine",
                 columns: table => new
                 {
@@ -265,12 +302,12 @@ namespace Animals.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AnimalId = table.Column<int>(type: "integer", nullable: true),
+                    AnimalId = table.Column<int>(type: "integer", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
                     IsPeriodic = table.Column<bool>(type: "boolean", nullable: false),
                     Period = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsUserDefined = table.Column<bool>(type: "boolean", nullable: false)
+                    ReminderTypeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -280,7 +317,13 @@ namespace Animals.Migrations
                         column: x => x.AnimalId,
                         principalTable: "Animal",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reminder_ReminderType_ReminderTypeId",
+                        column: x => x.ReminderTypeId,
+                        principalTable: "ReminderType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -305,14 +348,19 @@ namespace Animals.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Animal_AnimalSpeciesId",
+                name: "IX_Animal_SubSpeciesId",
                 table: "Animal",
-                column: "AnimalSpeciesId");
+                column: "SubSpeciesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Animal_UserId",
                 table: "Animal",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnimalSpecies_SpeciesIId",
+                table: "AnimalSpecies",
+                column: "SpeciesIId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AnimalVaccine_AnimalId_VaccineId",
@@ -368,6 +416,16 @@ namespace Animals.Migrations
                 column: "AnimalId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reminder_ReminderTypeId",
+                table: "Reminder",
+                column: "ReminderTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vaccine_SpeciesId",
+                table: "Vaccine",
+                column: "SpeciesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Weight_AnimalId",
                 table: "Weight",
                 column: "AnimalId");
@@ -409,6 +467,9 @@ namespace Animals.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "ReminderType");
+
+            migrationBuilder.DropTable(
                 name: "Animal");
 
             migrationBuilder.DropTable(
@@ -416,6 +477,9 @@ namespace Animals.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Species");
         }
     }
 }

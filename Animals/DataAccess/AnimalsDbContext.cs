@@ -40,15 +40,20 @@ namespace Animals.DataAccess
             modelBuilder.Entity<User>().HasMany(I => I.Animals).
               WithOne(I => I.User).HasForeignKey(I => I.UserId);
 
+            modelBuilder.Entity<Species>().HasMany(I => I.SubSpecies).
+                  WithOne(I => I.Species).HasForeignKey(I => I.SpeciesId);
+
             base.OnModelCreating(modelBuilder);
         }
 
-        public virtual DbSet<Animal> Animal { get; set; }
-        public virtual DbSet<Vaccine> Vaccine { get; set; }
-        public virtual DbSet<Reminder> Reminder { get; set; }
-        public virtual DbSet<AnimalVaccine> AnimalVaccine { get; set; }
-        public virtual DbSet<Weight> Weight { get; set; }
-        public virtual DbSet<AnimalSpecies> AnimalSpecies { get; set; }
+        public virtual DbSet<Animal> Animals { get; set; }
+        public virtual DbSet<Vaccine> Vaccines { get; set; }
+        public virtual DbSet<Reminder> Reminders { get; set; }
+        public virtual DbSet<ReminderType> ReminderTypes { get; set; }
+        public virtual DbSet<AnimalVaccine> AnimalVaccines { get; set; }
+        public virtual DbSet<Weight> Weights { get; set; }
+        public virtual DbSet<SubSpecies> SubSpecies { get; set; }
+        public virtual DbSet<Species> Species { get; set; }
         public virtual DbSet<ErrorLog> ErrorLog { get; set; }
 
     }

@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace Animals.Models
 {
-    public class AnimalSpecies
+    public class Species
     {
         public int Id { get; set; }
-
         [Required]
-        [StringLength(100)]
-        public string Breed { get; set; }
-
-        [Required]
-        public int PregnancyDuration { get; set; }
+        public string Name { get; set; }
+       public  ICollection<SubSpecies> SubSpecies { get; set; }
     }
 }

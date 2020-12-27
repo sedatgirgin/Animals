@@ -79,16 +79,18 @@ namespace Animals
 
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IAnimalRepository, AnimalRepository>();
-            services.AddScoped<IAnimalSpeciesRepository, AnimalSpeciesRepository>();
+            services.AddScoped<ISubSpeciesRepository, SubSpeciesRepository>();
             services.AddScoped<IWeightRepository, WeightRepository>();
             services.AddScoped<IReminderRepository, ReminderRepository>();
             services.AddScoped<IVaccineRepository, VaccineRepository>();
             services.AddScoped<IAnimalVaccineRepository, AnimalVaccineRepository>();
+            services.AddScoped<IReminderTypeRepository, ReminderTypeRepository>();
+            services.AddScoped<ISpeciesRepository, SpeciesRepository>();
 
             services.AddScoped<ICache, Cache>();
-            services.AddTransient<IValidator<LoginDto>, LoginValidator>();
-            services.AddTransient<IValidator<ResetPasswordDto>, ResetPasswordValidator>();
-            services.AddTransient<IValidator<ChangePasswordDto>, ChangePasswordValidator>();
+            //services.AddTransient<IValidator<LoginDto>, LoginValidator>();
+            //services.AddTransient<IValidator<ResetPasswordDto>, ResetPasswordValidator>();
+            //services.AddTransient<IValidator<ChangePasswordDto>, ChangePasswordValidator>();
             services.AddTransient<IValidator<UserDto>, UserValidator>();
 
             services.AddSwaggerGen(s =>

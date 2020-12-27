@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Animals.Entities
 {
-    public class AnimalDto
+    public class AnimalDtoInsert
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }

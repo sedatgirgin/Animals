@@ -11,11 +11,9 @@ namespace Animals.Models
     public class Reminder
     {
         public int Id { get; set; }
-
         [ForeignKey("AnimalId")]
         public int AnimalId { get; set; }
         public Animal Animal { get; set; }
-
         [Required]
         public string Message { get; set; }
         [Required]
@@ -25,7 +23,9 @@ namespace Animals.Models
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public bool IsUserDefined { get; set; }
+        [ForeignKey("ReminderTypeId")]
+        public int ReminderTypeId { get; set; } = 0;
+        public ReminderType ReminderType { get; set; }
 
     }
 }
