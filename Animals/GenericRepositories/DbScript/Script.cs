@@ -17,7 +17,10 @@ namespace Animals.GenericRepositories.DbScript
         public static string ReminderDelete = @"call  sp_reminder_delete(@id)";
         public static string ReminderInsert = @"call  sp_reminder_insert(@animalid,@message,@isperiodic,@period,@date,@remindertypeid)";
         public static string ReminderUpdate = @"call  sp_reminder_update(@id,@animalid,@message,@isperiodic,@period,@date,@remindertypeid)";
+        public static string ReminderList = @"select * from ""Reminders"" where ""AnimalId""=@animalId";
         public static string WeightDelete = @"call  sp_weight_delete(@id)";
         public static string WeightInsert = @"call  sp_weight_insert(@animalid,@date,@value)";
+        public static string WeightList = @"select * from ""Weights"" where ""AnimalId""=@animalId";
+
     }
 }

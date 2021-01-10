@@ -7,13 +7,12 @@ namespace Animals.Entities
 {
     public class RemiderDto
     {
-        public int RemiderId { get; set; }
+        public int Id { get; set; }
         public int AnimalId { get; set; }
         public string Message { get; set; }
         public bool IsPeriodic { get; set; }
         public int Period { get; set; }
         public DateTime Date { get; set; }
-        public bool IsUserDefined { get; set; }
-
+        public int ReminderTypeId { get; set; }
     }
 }
