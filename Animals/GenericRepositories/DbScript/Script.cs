@@ -21,6 +21,5 @@ namespace Animals.GenericRepositories.DbScript
         public static string WeightDelete = @"call  sp_weight_delete(@id)";
         public static string WeightInsert = @"call  sp_weight_insert(@animalid,@date,@value)";
         public static string WeightList = @"select * from ""Weights"" where ""AnimalId""=@animalId";
-
     }
 }

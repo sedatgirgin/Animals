@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Animals.GenericRepositories.Abstract
 {
-    interface ISpeciesRepository : IGenericRepository<Species>
+    public interface ISpeciesRepository : IGenericRepository<Species>
     {
     }
 }
